@@ -1,0 +1,62 @@
+Config class : 
+spring.datasource.url=jdbc:druid:http://your-druid-broker-url:8082/druid/v2/sql
+spring.datasource.username=your-username
+spring.datasource.password=your-password
+
+#Create a JPA Entity:
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "your_druid_table_name")
+public class YourEntity {
+    @Id
+    private Long id;
+    private String column1;
+    private String column2;
+    // Add more fields as needed
+}
+#Create a Repository Interface:
+#Create a repository interface that extends JpaRepository or CrudRepository to perform CRUD operations.
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface YourEntityRepository extends JpaRepository<YourEntity, Long> {
+}
+
+#Write a Service for Querying Data:
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class YourEntityService {
+    @Autowired
+    private YourEntityRepository repository;
+
+    public List<YourEntity> executeCustomQuery(String sqlQuery) {
+        // You can execute custom SQL queries
+        return repository.findByCustomQuery(sqlQuery);
+    }
+}
+#Controller to Handle Requests:
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
+@RestController
+public class YourEntityController {
+    @Autowired
+    private YourEntityService service;
+
+    @GetMapping("/customQuery")
+    public List<YourEntity> customQuery(@RequestParam String sql) {
+        return service.executeCustomQuery(sql);
+    }
+}
+#Run Your Spring Boot Application:
+#Run your Spring Boot application. You can send GET requests to /customQuery with a sql parameter to execute your custom SQL queries.
+
